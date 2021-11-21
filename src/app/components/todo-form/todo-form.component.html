@@ -1,0 +1,5 @@
+<form>
+  <input class="form-control" (input)="onInput(taskNameField.value)" #taskNameField>
+  {{ taskNameField.value }}
+  <button class="form-control" (click)="onDone()">Submit</button>
+</form>
