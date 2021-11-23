@@ -1,1 +1,7 @@
-<p>todo-list works!</p>
+<ul>
+  <li *ngFor="let todo of todos" (click)="todoToggle.emit(todo)">
+    <span *ngIf="todo.done">👌</span>
+    <span *ngIf="!todo.done">🤢</span>
+    {{ todo.title }}
+  </li>
+</ul>

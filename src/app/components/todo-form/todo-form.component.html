@@ -1,5 +1,4 @@
-<form>
-  <input class="form-control" (input)="onInput(taskNameField.value)" #taskNameField>
-  {{ taskNameField.value }}
-  <button class="form-control" (click)="onDone()">Submit</button>
+<form (ngSubmit)="onDone()">
+  <input class="form-control" [value]="todoTitle" (input)="onInput(taskNameField.value)" #taskNameField>
+  <button class="btn btn-primary" type="submit">Submit</button>
 </form>
