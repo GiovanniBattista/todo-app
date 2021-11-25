@@ -1,2 +1,9 @@
-<app-todo-list [todos]="todoService.todoList" (todoToggle)="todoService.toggle($event)" (todoDelete)="todoService.delete($event.id)"></app-todo-list>
-<app-todo-form (todoCreate)="onTodoCreate($event)"></app-todo-form>
+<app-todo-list
+  [todos]="todoService.todoList"
+  (todoToggle)="onToggle($event)"
+  (todoDelete)="onDelete($event)">
+</app-todo-list>
+
+<app-todo-form
+  (todoCreate)="onTodoCreate($event)">
+</app-todo-form>

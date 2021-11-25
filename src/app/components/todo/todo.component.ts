@@ -15,7 +15,19 @@ export class TodoComponent {
 
   onTodoCreate(todo: TodoCreate):void {
     console.log("Received todo: ", todo);
-    this.todoService.create(todo);
+    this.todoService.create(todo).subscribe(todo => {
+      console.log('todo created', todo);
+    });
+  }
+
+  onDelete(todo: Todo): void {
+    this.todoService.delete(todo.id).subscribe(() => {
+      console.log('really deleted');
+    });
+  }
+
+  onToggle(todo: Todo): void {
+    this.todoService.toggle(todo).subscribe();
   }
 
 }

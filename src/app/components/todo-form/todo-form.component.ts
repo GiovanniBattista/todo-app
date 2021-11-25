@@ -13,13 +13,10 @@ export class TodoFormComponent {
   todoCreate = new EventEmitter<TodoCreate>();
 
   onInput( todoTitle: string) {
-    console.log(todoTitle);
     this.todoTitle = todoTitle;
   }
 
   onDone() {
-    console.log('onDone', this.todoTitle);
-
     if (this.todoTitle.length > 0) {
       const payload: TodoCreate = {
         title: this.todoTitle
