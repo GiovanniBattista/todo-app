@@ -17,4 +17,9 @@ export class TodoListComponent {
   @Output()
   todoDelete = new EventEmitter<Todo>();
 
+  onDelete(event: MouseEvent, todo: Todo) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.todoDelete.emit(todo);
+  }
 }

@@ -1,10 +1,10 @@
 <ul>
-  <li *ngFor="let todo of todos">
-    <span style="cursor: pointer; user-select: none" (click)="todoToggle.emit(todo)">
-      <span *ngIf="todo.done">✅</span>
-      <span *ngIf="!todo.done">⬜</span>
-      {{ todo.title }}
-    </span>
-    <span style="cursor: pointer; user-select: none" (click)="todoDelete.emit(todo)">🗑</span>
+  <li *ngFor="let todo of todos" style="cursor: pointer; user-select: none" (click)="todoToggle.emit(todo)">
+    <span *ngIf="todo.done">✅</span>
+    <span *ngIf="!todo.done">⬜</span>
+
+    {{ todo.title }}
+
+    <span style="cursor: pointer; user-select: none" (click)="onDelete($event, todo)">🗑</span>
   </li>
 </ul>
