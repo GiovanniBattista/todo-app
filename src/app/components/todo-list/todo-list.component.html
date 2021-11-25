@@ -1,7 +1,10 @@
 <ul>
-  <li *ngFor="let todo of todos" (click)="todoToggle.emit(todo)">
-    <span *ngIf="todo.done">👌</span>
-    <span *ngIf="!todo.done">🤢</span>
-    {{ todo.title }}
+  <li *ngFor="let todo of todos">
+    <span style="cursor: pointer; user-select: none" (click)="todoToggle.emit(todo)">
+      <span *ngIf="todo.done">✅</span>
+      <span *ngIf="!todo.done">⬜</span>
+      {{ todo.title }}
+    </span>
+    <span style="cursor: pointer; user-select: none" (click)="todoDelete.emit(todo)">🗑</span>
   </li>
 </ul>

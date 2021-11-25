@@ -14,4 +14,7 @@ export class TodoListComponent {
   @Output()
   todoToggle = new EventEmitter<Todo>();
 
+  @Output()
+  todoDelete = new EventEmitter<Todo>();
+
 }

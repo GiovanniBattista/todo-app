@@ -25,8 +25,8 @@ export class TodoService {
   }
 
   delete(id: number) {
-    // filter
-
-    // Hü Delete funktion ausimplementieren
+    if (id > 0) {
+      this.todoList = this.todoList.filter(todo => todo.id !== id);
+    }
   }
 }
