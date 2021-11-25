@@ -1,5 +1,7 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { delay, Observable, of, tap } from "rxjs";
+import { BehaviorSubject, delay, Observable, of, tap } from "rxjs";
+import { environment } from "src/environments/environment";
 import { Todo, TodoCreate } from "../types";
 
 @Injectable({
@@ -7,49 +9,46 @@ import { Todo, TodoCreate } from "../types";
 })
 export class TodoService {
 
-  counter = 1;
+  private todoList$$ = new BehaviorSubject<Todo[]>([]);
+  todoList$: Observable<Todo[]> = this.todoList$$.asObservable();
 
-  todoList: Todo[] = [];
+  private endpoint = environment.api + '/todos';
+
+  constructor(private httpClient: HttpClient) {
+
+  }
+
+  get(): Observable<Todo[]> {
+    return this.httpClient.get<Todo[]>(this.endpoint).pipe(
+      tap(response => this.todoList$$.next(response))
+    );
+  }
 
   create(todo: TodoCreate): Observable<Todo> {
-    const newTodo: Todo = {
-      id: this.counter,
-      title: todo.title,
-      dueDate: todo.dueDate
-    };
-    this.counter ++;
-
-    return of(newTodo).pipe(
-      delay(500),
-      tap(todo => {
-        this.todoList.push(todo);
+    return this.httpClient.post<Todo>(this.endpoint, todo).pipe(
+      tap(newTodo => {
+        const list = this.todoList$$.getValue();
+        const listCopy = [...list, newTodo];
+        this.todoList$$.next(listCopy);
       })
     );
+  }
+
+  // TODO Delete update umbauen, damit das auch wieder reactive bleibt
+  // npm run develop
+  delete(id: number): Observable<void> {
+    return this.httpClient.delete<void>(this.endpoint + '/' + id);
+  }
+
+  update(todo: Todo): Observable<Todo> {
+    return this.httpClient.put<Todo>(this.endpoint + '/' + todo.id, todo);
   }
 
   toggle(todo: Todo): Observable<Todo> {
-    return of(todo).pipe(
-      delay(500),
-      tap((todo) => {
-        this.todoList = this.todoList.map(currentTodo => {
-          if (todo.id === currentTodo.id) {
-            return {
-              ...currentTodo,
-              done: !currentTodo.done
-            }
-          }
-          return currentTodo;
-        });
-      })
-    );
+    return this.update({
+      ...todo,
+      done: !todo.done
+    });
   }
 
-  delete(id: number): Observable<void> {
-    return of(undefined).pipe(
-      delay(500),
-      tap(() => {
-        this.todoList = this.todoList.filter(todo => todo.id !== id);
-      })
-    );
-  }
 }

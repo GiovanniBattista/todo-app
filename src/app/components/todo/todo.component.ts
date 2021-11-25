@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { TodoService } from 'src/app/services/todo.service';
 import { Todo, TodoCreate } from 'src/app/types';
 
@@ -7,10 +7,14 @@ import { Todo, TodoCreate } from 'src/app/types';
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.css']
 })
-export class TodoComponent {
+export class TodoComponent implements OnInit {
 
   constructor(public todoService: TodoService) {
     console.log('todoService', todoService);
+  }
+
+  ngOnInit() {
+    this.todoService.get().subscribe();
   }
 
   onTodoCreate(todo: TodoCreate):void {

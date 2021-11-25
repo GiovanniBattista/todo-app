@@ -1,5 +1,5 @@
 <app-todo-list
-  [todos]="todoService.todoList"
+  [todos]="(todoService.todoList$ | async) || []"
   (todoToggle)="onToggle($event)"
   (todoDelete)="onDelete($event)">
 </app-todo-list>

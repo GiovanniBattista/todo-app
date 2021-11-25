@@ -1,10 +1,10 @@
 
 export interface TodoCreate {
   title: string;
-  dueDate?: Date;
+  done?: boolean;
+  due?: string;
 }
 
 export interface Todo extends TodoCreate {
   id: number;
-  done?: boolean;
 }
