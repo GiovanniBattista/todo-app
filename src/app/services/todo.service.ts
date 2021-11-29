@@ -37,11 +37,29 @@ export class TodoService {
   // TODO Delete update umbauen, damit das auch wieder reactive bleibt
   // npm run develop
   delete(id: number): Observable<void> {
-    return this.httpClient.delete<void>(this.endpoint + '/' + id);
+    return this.httpClient.delete<void>(this.endpoint + '/' + id).pipe(
+      tap(() => {
+        const list = this.todoList$$.getValue();
+        const updatedList = list.filter(elem => elem.id !== id);
+        this.todoList$$.next(updatedList);
+      })
+    )
   }
 
   update(todo: Todo): Observable<Todo> {
-    return this.httpClient.put<Todo>(this.endpoint + '/' + todo.id, todo);
+    return this.httpClient.put<Todo>(this.endpoint + '/' + todo.id, todo).pipe(
+      tap(todo => {
+        const list = this.todoList$$.getValue();
+        const listCopy = [...list];
+        const idx2Update = listCopy.findIndex(elem => elem.id === todo.id);
+        if (idx2Update > 0) {
+          listCopy[idx2Update].title = todo.title;
+          listCopy[idx2Update].done = todo.done;
+          listCopy[idx2Update].due = todo.due;
+          this.todoList$$.next(listCopy);
+        }
+      })
+    );
   }
 
   toggle(todo: Todo): Observable<Todo> {
