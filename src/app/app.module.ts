@@ -3,24 +3,29 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { TodoFormComponent } from './components/todo-form/todo-form.component';
-import { TodoItemComponent } from './components/todo-item/todo-item.component';
-import { TodoListComponent } from './components/todo-list/todo-list.component';
-import { TodoComponent } from './components/todo/todo.component';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthModule } from './modules/auth/auth.module';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './modules/auth/components/login/login.component';
+
+const routes: Routes = [{
+  path: '',
+  component: LoginComponent
+},{
+  path: 'todos',
+  loadChildren: () => import('./modules/todo/todo.module').then(m => m.TodoModule)
+}];
 
 @NgModule({
   declarations: [
     AppComponent,
-    TodoFormComponent,
-    TodoItemComponent,
-    TodoListComponent,
-    TodoComponent
   ],
   imports: [
     BrowserModule,
+    RouterModule.forRoot(routes),
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]

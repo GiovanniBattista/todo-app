@@ -70,3 +70,5 @@ export class TodoService {
   }
 
 }
+
+//npm run strapi admin:reset-user-password
