@@ -1,1 +1,18 @@
-<p>login works!</p>
+<div>
+  <form class="form-group" (ngSubmit)="login()">
+    <div class="mb-2">
+      <label for="username">Username</label>
+      <input class="form-control" type="text" id="username" name="username" [(ngModel)]="username">
+    </div>
+    <div class="mb-2">
+      <label for="password">Password</label>
+      <input class="form-control"  id="password" type="password" name="password" [(ngModel)]="password">
+    </div>
+
+    <div *ngIf="error">
+      {{ error.message }}
+    </div>
+
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+</div>
