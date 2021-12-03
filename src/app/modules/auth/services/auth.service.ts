@@ -4,7 +4,8 @@ import { Observable, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 
 export interface LoginResponse {
-  access_token: string;
+  access_token?: string;
+  jwt?: string;
 }
 
 const TOKEN_KEY = 'token';
@@ -21,14 +22,19 @@ export class AuthService {
   login( username: string, password: string): Observable<LoginResponse> {
     localStorage.removeItem(TOKEN_KEY);
 
-    return this.httpClient.post<LoginResponse>(environment.api + '/auth/login', {
-      username: username,
+    return this.httpClient.post<LoginResponse>(environment.api + '/auth/local', {
+      identifier: username,
       password: password
     }).pipe(
       tap( response => {
-
+        console.log("response: ", response);
         if (response.access_token) {
+          console.log("Store access_token");
           localStorage.setItem(TOKEN_KEY, response.access_token);
+        }
+        if (response.jwt) {
+          console.log("Store jwt");
+          localStorage.setItem(TOKEN_KEY, response.jwt);
         }
       })
     );

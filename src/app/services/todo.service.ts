@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, delay, Observable, of, tap } from "rxjs";
+import { BehaviorSubject, delay, map, Observable, of, tap } from "rxjs";
 import { environment } from "src/environments/environment";
-import { Todo, TodoCreate } from "../types";
+import { StrapiListResponse, StrapiRequest, StrapiSingleResponse, Todo, TodoCreate } from "../types";
 
 @Injectable({
   providedIn: 'root'
@@ -19,14 +19,37 @@ export class TodoService {
   }
 
   get(): Observable<Todo[]> {
-    return this.httpClient.get<Todo[]>(this.endpoint).pipe(
-      tap(response => this.todoList$$.next(response))
+    return this.httpClient.get<StrapiListResponse>(this.endpoint).pipe(
+      map(response => {
+        console.log("response received: ", response);
+        return response.data;
+      }),
+      map(data => data.map(elem => {
+        const todo: Todo = {
+          ...elem.attributes,
+          id: elem.id
+        };
+        return todo;
+      })),
+      tap(todos => this.todoList$$.next(todos))
     );
   }
 
   create(todo: TodoCreate): Observable<Todo> {
-    return this.httpClient.post<Todo>(this.endpoint, todo).pipe(
+    const strapiRequest: StrapiRequest = {
+      data: todo
+    };
+    return this.httpClient.post<StrapiSingleResponse>(this.endpoint, strapiRequest).pipe(
+      map(response => response.data),
+      map(data => {
+        const todo: Todo = {
+          ...data.attributes,
+          id: data.id
+        };
+        return todo;
+      }),
       tap(newTodo => {
+        console.log("CREATE_TODO_RESPONSE_2", newTodo);
         const list = this.todoList$$.getValue();
         const listCopy = [...list, newTodo];
         this.todoList$$.next(listCopy);
@@ -47,7 +70,18 @@ export class TodoService {
   }
 
   update(todo: Todo): Observable<Todo> {
-    return this.httpClient.put<Todo>(this.endpoint + '/' + todo.id, todo).pipe(
+    const body : StrapiRequest = {
+      data: todo
+    };
+    return this.httpClient.put<StrapiSingleResponse>(this.endpoint + '/' + todo.id, body).pipe(
+      map(response => response.data),
+      map(data => {
+        const updatedTodo: Todo = {
+          ...data.attributes,
+          id: data.id
+        };
+        return updatedTodo;
+      }),
       tap(todo => {
         const list = this.todoList$$.getValue();
         const listCopy = [...list];
