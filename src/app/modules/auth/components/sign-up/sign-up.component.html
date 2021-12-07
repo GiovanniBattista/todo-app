@@ -1,0 +1,47 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+  <div class="mb-3">
+    <label for="firstName">First name</label>
+    <input id="firstName" autocomplete="given-name" type="text" class="form-control" formControlName="firstName">
+
+    <app-input-errors [errors]="form.get('firstName')?.errors"></app-input-errors>
+  </div>
+
+  <div class="mb-3">
+    <label for="lastName">Last name</label>
+    <input id="lastName" autocomplete="family-name" type="text" class="form-control" formControlName="lastName">
+
+    <app-input-errors [errors]="form.get('lastName')?.errors"></app-input-errors>
+  </div>
+
+  <div class="mb-3">
+    <label for="email">Email</label>
+    <input id="email" autocomplete="email" type="email" class="form-control" formControlName="email">
+
+    <app-input-errors [errors]="form.get('email')?.errors"></app-input-errors>
+  </div>
+
+  <div class="mb-3">
+    <label for="password">Password</label>
+    <input id="password" autocomplete="new-password" type="password" class="form-control" formControlName="password">
+
+    <app-input-errors [errors]="form.get('password')?.errors"></app-input-errors>
+  </div>
+
+  <div class="mb-3">
+    <label for="passwordRepeat">Password repeat</label>
+    <input id="passwordRepeat" autocomplete="off" type="password" class="form-control" formControlName="passwordRepeat">
+
+    <app-input-errors [errors]="form.get('passwordRepeat')?.errors"></app-input-errors>
+  </div>
+
+  <div *ngIf="form.errors?.['passwordMatch']">
+    Attention: Passwords do not match!
+  </div>
+
+  <pre>Form valid: {{ form.valid | json }}</pre>
+  <pre>{{ form.value | json }}</pre>
+
+  <button class="btn btn-primary" type="submit">Sign up</button>
+
+</form>

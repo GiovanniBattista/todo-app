@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, tap } from "rxjs";
+import { map, Observable, of, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 
 export interface LoginResponse {
@@ -32,6 +32,14 @@ export class AuthService {
         }
       })
     );
+  }
+
+  checkEmail(email: string): Observable<boolean> {
+    const params = new HttpParams().set('email', email);
+    return this.httpClient.get<{ available: boolean }>(`${environment.api}/auth/check-email`, { params })
+      .pipe(
+        map(result => result.available),
+      );
   }
 
   logout() {
