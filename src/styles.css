@@ -1,1 +1,41 @@
-/* You can add global styles to this file, and also import other style files */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: blue;
+}
+
+a:visited {
+  color: rgb(88, 71, 163);
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.25rem 0.5rem;
+  color: white;
+  background-color: rgb(113, 113, 204);
+  border: 1px solid rgb(113, 113, 204);
+  transition: transform 250ms;
+}
+
+button:hover {
+  transform: skew(10deg);
+}

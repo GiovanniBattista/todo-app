@@ -1,0 +1,13 @@
+<input [disabled]="disabled" [checked]="value" (change)="valueChange.emit(!value)" [id]="'toggle-' + id" type="checkbox" >
+<label [for]="'toggle-' + id" class="toggle">
+  <div class="slider">
+    <div class="knob"></div>
+  </div>
+
+  <div class="toggle-content">
+    <ng-content></ng-content>
+  </div>
+</label>
+
+
+
