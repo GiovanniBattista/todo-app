@@ -9,13 +9,15 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
 import { LogoutComponent } from './components/logout/logout.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { SharedModule } from '../shared/shared.module';
+import { BoxModelComponent } from './components/box-model/box-model.component';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
     LogoutComponent,
-    SignUpComponent
+    SignUpComponent,
+    BoxModelComponent
   ],
   imports: [
     CommonModule,

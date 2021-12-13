@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BoxModelComponent } from './components/box-model/box-model.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
@@ -19,6 +20,10 @@ const routes: Routes = [{
   path: 'logout',
   canActivate: [LoggedInGuard],
   component: LogoutComponent
+},
+{
+  path: 'box-model',
+  component: BoxModelComponent
 }];
 
 @NgModule({
