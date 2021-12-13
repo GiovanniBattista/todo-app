@@ -22,5 +22,7 @@
 }
 
 .box-model-2 {
-
+  border: 5px dotted black;
+  margin: 20 1em 40px 2em;
+  padding: 1em;
 }
