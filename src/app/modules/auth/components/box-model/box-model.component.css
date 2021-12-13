@@ -26,3 +26,9 @@
   margin: 20 1em 40px 2em;
   padding: 1em;
 }
+
+.box-model-3 span {
+  background-color: pink;
+  border: 5px solid black;
+  padding: 1em;
+}
