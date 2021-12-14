@@ -1,4 +1,4 @@
-<input [disabled]="disabled" [checked]="value" (change)="valueChange.emit(!value)" [id]="'toggle-' + id" type="checkbox" >
+<input [disabled]="disabled" [checked]="value" (change)="onToggleChange()" [id]="'toggle-' + id" type="checkbox" >
 <label [for]="'toggle-' + id" class="toggle">
   <div class="slider">
     <div class="knob"></div>

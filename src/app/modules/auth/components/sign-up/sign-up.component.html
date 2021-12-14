@@ -35,6 +35,11 @@
     <app-input-errors [errors]="form.get('passwordRepeat')?.errors"></app-input-errors>
   </div>
 
+  <div class="form-group">
+    <app-toggle formControlName="disclaimerAccepted">Accept Disclaimer</app-toggle>
+    <app-input-errors [errors]="form.get('disclaimerAccepted')?.errors"></app-input-errors>
+  </div>
+
   <div *ngIf="form.errors?.['passwordMatch']">
     Attention: Passwords do not match!
   </div>
