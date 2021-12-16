@@ -1,7 +1,6 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, delay, Observable, of, tap } from "rxjs";
-import { environment } from "src/environments/environment";
+import { addDoc, collection, deleteDoc, doc, Firestore, getDoc, onSnapshot, query, setDoc } from "@angular/fire/firestore";
+import { BehaviorSubject, delay, EMPTY, from, map, Observable, of, switchMap, tap } from "rxjs";
 import { Todo, TodoCreate } from "../types";
 
 @Injectable({
@@ -11,55 +10,56 @@ export class TodoService {
 
   private todoList$$ = new BehaviorSubject<Todo[]>([]);
   todoList$: Observable<Todo[]> = this.todoList$$.asObservable();
+  todoCollection = collection(this.firestore, 'todos');
 
-  private endpoint = environment.api + '/todos';
+  constructor(private firestore: Firestore) {
+    const todoQuery = query(this.todoCollection);
 
-  constructor(private httpClient: HttpClient) {
+    onSnapshot(todoQuery, (q) => {
+      const newData: Todo[] = [];
 
-  }
+      q.forEach(doc => {
+        newData.push({
+          ...doc.data(),
+          id: doc.id
+        } as Todo);
+      })
 
-  get(): Observable<Todo[]> {
-    return this.httpClient.get<Todo[]>(this.endpoint).pipe(
-      tap(response => this.todoList$$.next(response))
-    );
+      this.todoList$$.next(newData);
+    });
   }
 
   create(todo: TodoCreate): Observable<Todo> {
-    return this.httpClient.post<Todo>(this.endpoint, todo).pipe(
-      tap(newTodo => {
-        const list = this.todoList$$.getValue();
-        const listCopy = [...list, newTodo];
-        this.todoList$$.next(listCopy);
-      })
+    const promise = addDoc(this.todoCollection, {
+      title: todo.title,
+      done: todo.done || false,
+    } as TodoCreate);
+
+    return from(promise).pipe(
+      switchMap(docRef => {
+        return getDoc(docRef);
+      }),
+      map(content => {
+        const data = content.data();
+
+        return {
+          ...data,
+          id: content.id,
+        } as Todo;
+      }),
     );
   }
 
-  // TODO Delete update umbauen, damit das auch wieder reactive bleibt
-  // npm run develop
-  delete(id: number): Observable<void> {
-    return this.httpClient.delete<void>(this.endpoint + '/' + id).pipe(
-      tap(() => {
-        const list = this.todoList$$.getValue();
-        const updatedList = list.filter(elem => elem.id !== id);
-        this.todoList$$.next(updatedList);
-      })
-    )
+  delete(id: string): Observable<void> {
+    const promise = deleteDoc(doc(this.firestore, "/todos/" + id));
+    return from(promise);
   }
 
   update(todo: Todo): Observable<Todo> {
-    return this.httpClient.put<Todo>(this.endpoint + '/' + todo.id, todo).pipe(
-      tap(todo => {
-        const list = this.todoList$$.getValue();
-        const listCopy = [...list];
-        const idx2Update = listCopy.findIndex(elem => elem.id === todo.id);
-        if (idx2Update > 0) {
-          listCopy[idx2Update].title = todo.title;
-          listCopy[idx2Update].done = todo.done;
-          listCopy[idx2Update].due = todo.due;
-          this.todoList$$.next(listCopy);
-        }
-      })
-    );
+    const docRef = doc(this.firestore, "/todos/" + todo.id);
+    const promise = setDoc(docRef, todo);
+
+    return from(promise) as any;
   }
 
   toggle(todo: Todo): Observable<Todo> {

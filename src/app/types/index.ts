@@ -6,5 +6,5 @@ export interface TodoCreate {
 }
 
 export interface Todo extends TodoCreate {
-  id: number;
+  id: string;
 }
