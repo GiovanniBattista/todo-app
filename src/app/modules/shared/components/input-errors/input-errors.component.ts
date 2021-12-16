@@ -6,13 +6,29 @@ import { ValidationErrors } from '@angular/forms';
   templateUrl: './input-errors.component.html',
   styleUrls: ['./input-errors.component.css']
 })
-export class InputErrorsComponent implements OnInit {
+export class InputErrorsComponent {
 
   @Input() errors: ValidationErrors | null | undefined;
 
   constructor() { }
 
-  ngOnInit(): void {
+  get errorsArray(): { name: string; payload?: any }[] {
+    /*ValidationErrors = [{
+      required, true,
+      minLength: { },
+    }] */
+
+    if (this.errors != null) {
+      const keys = Object.keys(this.errors);
+      return keys.map(key => {
+        return {
+          name: key,
+          payload: this.errors?.[key]
+        };
+      })
+    } else {
+      return [];
+    }
   }
 
 }

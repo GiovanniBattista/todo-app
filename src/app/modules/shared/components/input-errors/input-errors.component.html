@@ -1,3 +1,5 @@
 <div *ngIf="errors">
-  <pre>{{ errors | json }}</pre>
+  <div *ngFor="let error of errorsArray" class="alert alert-danger">
+      {{ error.name }}
+  </div>
 </div>
