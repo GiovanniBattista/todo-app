@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, of } from 'rxjs';
+import { Router } from '@angular/router';
+import { last, map, of } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 function checkEmailValidator(authService: AuthService): AsyncValidatorFn {
@@ -31,12 +32,17 @@ function checkEmailValidator(authService: AuthService): AsyncValidatorFn {
 })
 export class SignUpComponent implements OnInit {
   form: FormGroup;
+  error: Error | null = null;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router) {
+
     this.form = formBuilder.group({
       firstName: [null, [Validators.required]],
       lastName: [null, [Validators.required]],
-      email: [null, [Validators.required, Validators.email], [checkEmailValidator(authService)]],
+      email: [null, [Validators.required, Validators.email]], //, [checkEmailValidator(authService)]
       password: [null, [Validators.required, Validators.minLength(8)]],
       passwordRepeat: [null, [Validators.required]],
       disclaimerAccepted: [false, [Validators.requiredTrue]],
@@ -62,9 +68,23 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    this.error = null;
+
     if (this.form.valid) {
-      alert('Submitting');
+      const email = this.form.value.email;
+      const password = this.form.value.password;
+      const firstName = this.form.value.firstName;
+      const lastName = this.form.value.lastName;
+
+      this.authService.register(email, password, firstName, lastName).subscribe(
+        (args) => {
+          console.log("User was successfully registered!", args);
+          this.router.navigate(['/todos']);
+        },
+        (error) => {
+          this.error = error;
+        }
+      );
     }
   }
 

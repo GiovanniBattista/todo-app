@@ -1,7 +1,7 @@
 import { Route } from '@angular/compiler/src/core';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanLoad, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -32,10 +32,14 @@ export class LoggedInGuard implements CanActivate, CanActivateChild, CanLoad {
   }
 
   private check() {
-    if (this.authService.getToken()) {
-      return true;
-    }
+    return this.authService.isAuthenticated().pipe(
+      map(isAuth => {
+        if (isAuth) {
+          return true;
+        }
 
-    return this.router.createUrlTree(['/']);
+        return this.router.createUrlTree(['/']);
+      })
+    );
   }
 }

@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, of, tap } from "rxjs";
+import { Auth, createUserWithEmailAndPassword, updateProfile, User, UserCredential, signInWithEmailAndPassword, authState, signOut } from "@angular/fire/auth";
+import { from, map, Observable, switchMap, tap } from "rxjs";
 import { environment } from "src/environments/environment";
 
 export interface LoginResponse {
@@ -13,25 +14,38 @@ const TOKEN_KEY = 'token';
   providedIn: 'root'
 })
 export class AuthService {
+  user$: Observable<User | null>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private auth: Auth) {
 
+      this.user$ = authState(this.auth);
   }
 
-  login( username: string, password: string): Observable<LoginResponse> {
-    localStorage.removeItem(TOKEN_KEY);
-
-    return this.httpClient.post<LoginResponse>(environment.api + '/auth/login', {
-      username: username,
-      password: password
-    }).pipe(
-      tap( response => {
-
-        if (response.access_token) {
-          localStorage.setItem(TOKEN_KEY, response.access_token);
-        }
-      })
+  isAuthenticated(): Observable<boolean> {
+    return this.user$.pipe(
+      map(user => user != null)
     );
+  }
+
+  register( email: string, password: string, firstName: string, lastName: string) {
+    const registerPromise = createUserWithEmailAndPassword(this.auth, email, password);
+    const observable = from(registerPromise);
+    return observable.pipe(
+      switchMap(response => {
+        return updateProfile(response.user, {
+          displayName: firstName + ' ' + lastName,
+        })
+      }),
+    );
+  }
+
+  login( email: string, password: string): Observable<UserCredential> {
+    const loginPromise = signInWithEmailAndPassword(this.auth, email, password);
+    const observable = from(loginPromise);
+
+    return observable;
   }
 
   checkEmail(email: string): Observable<boolean> {
@@ -43,7 +57,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem(TOKEN_KEY);
+    return from(signOut(this.auth));
   }
 
   getToken(): string | null {
