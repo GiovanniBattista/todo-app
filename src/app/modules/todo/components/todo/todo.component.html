@@ -1,9 +1,12 @@
-<app-todo-list
-  [todos]="(todoService.todoList$ | async) || []"
-  (todoToggle)="onToggle($event)"
-  (todoDelete)="onDelete($event)">
-</app-todo-list>
+<div class="todo">
+  <app-todo-list
+    class="mb-3"
+    [todos]="(todoService.todoList$ | async) || []"
+    (todoToggle)="onToggle($event)"
+    (todoDelete)="onDelete($event)">
+  </app-todo-list>
 
-<app-todo-form
-  (todoCreate)="onTodoCreate($event)">
-</app-todo-form>
+  <app-todo-form
+    (todoCreate)="onTodoCreate($event)">
+  </app-todo-form>
+</div>
